@@ -1,8 +1,11 @@
 package main
 
 import (
+    "time"
 )
 
 type Client struct {
-    ip string
+    Name string
+    Ip string
+    Timestamp time.Time
 }

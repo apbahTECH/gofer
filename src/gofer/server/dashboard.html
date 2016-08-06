@@ -1,6 +1,61 @@
+<!DOCTYPE html>
 <html>
+    <head>
+        <!-- Bootstrap compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional Bootstrap theme -->
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Bootstrap Javascript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script>
+            // Keep our table updated with the latest clients on the server.
+            function refresh() {
+                // Refresh the Clients that appear in our table.
+                var dataRequest = {
+                    Operation : "clients"
+                }
+                $.ajax({
+                    method: "POST",
+                    url: "/data",
+                    data: JSON.stringify(dataRequest),
+                    success: function(data){
+                        console.log("AJAX SUCCESS");
+                        console.log(data);
+                        var clients = JSON.parse(data);
+                        var html = "<tr>";
+                        for(i = 0; i < clients.length; i++) {
+                            var c = clients[i];
+                            html = ("<td>" + c.Name + "</td>" +
+                                    "<td>" + c.Ip + "</td>");
+                        }
+                        html = html + "</tr>";
+                        $('#client-table-body').html(html);
+                    },
+                    error: function(){
+                        console.log("AJAX ERROR");
+                    }
+                });
+                // Refresh every 2 seconds.
+                setTimeout(refresh, 2000);
+            }
+            // We need to force refresh the first time. This both starts the
+            // timeout setting and actually fills our table.
+            refresh();
+        </script>
+    </head>
     <body>
-        <h1> Hello world! </h1>
-        <p>Template rendered by Go ledare server!</p>
+        <h2>Clients</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody id="client-table-body">
+            </tbody>
+        </table>
     </body>
 </html>
